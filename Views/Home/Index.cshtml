@@ -1,0 +1,138 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="row">
+    <div class="col-sm-12">
+
+        <div class="card">
+            <div class="card-header"> Cargar Excel</div>
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-sm-4">
+                         <input class="form-control-file" type="file" id="inputExcel" />
+                    </div>
+                    <div class="col-sm-4">
+                         <button class="btn btn-warning" onclick="showData()">Mostrar Datos</button>
+                         <button class="btn btn-success" onclick="sendData()">Enviar Datos a BD</button>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="row">
+                    <div class="">
+                        <table id="tbData" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Secretaria</th>
+                                    <th>Direccion</th>
+                                    <th>I_PreEstim</th>
+                                    <th>I_PreMod</th>
+                                    <th>I_PreDev</th>
+                                    <th>I_PreReca</th>
+                                    <th>E_PreOrigApro</th>
+                                    <th>E_1A_AmpPres</th>
+                                    <th>E_2A_AmpPres</th>
+                                    <th>E_3A_AmpPres</th>
+                                    <th>E_Tot_Amp</th>
+                                    <th>E_PreModif</th>
+                                    <th>E_PreComp</th>
+                                    <th>E_PreDev</th>
+                                    <th>E_PreEjer</th>
+                                    <th>E_PreErog</th>
+                                    <th>E_PreCons</th>
+                                    <th>E_PrePorEjer</th>
+                                    <th>FechaCorte</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+
+        function showData() {
+            const input = document.getElementById("inputExcel")
+
+            const formData = new FormData()
+            formData.append("ExcelFile", input.files[0])
+
+            fetch("ARecFin/ShowPresupuestoData",{
+                method: "POST",
+                body:formData
+            })
+            .then((response) => { return response.json()})
+            .then((dataJson) => {
+                
+                console.log(dataJson)
+                dataJson.forEach((item) => {
+                    $("#tbData tbody").append(
+                        $("<tr>").append(
+                            $("<td>").text(item.secretaria),
+                            $("<td>").text(item.direccion),
+                            $("<td>").text(item.i_PreEstim),
+                            $("<td>").text(item.i_PreMod),
+                            $("<td>").text(item.i_PreDev),
+                            $("<td>").text(item.i_PreReca),
+                            $("<td>").text(item.e_PreOrigApro),
+                            $("<td>").text(item.e_1A_AmpPres),
+                            $("<td>").text(item.e_2A_AmpPres),
+                            $("<td>").text(item.e_3A_AmpPres),
+                            $("<td>").text(item.e_Tot_Amp),
+                            $("<td>").text(item.e_PreModif),
+                            $("<td>").text(item.e_PreComp),
+                            $("<td>").text(item.e_PreDev),
+                            $("<td>").text(item.e_PreEjer),
+                            $("<td>").text(item.e_PreErog),
+                            $("<td>").text(item.e_PreCons),
+                            $("<td>").text(item.e_PrePorEjer),
+                            $("<td>").text(item.fechaCorte),
+                        )
+                    
+                    )
+                })
+            
+            })
+        
+        
+        }
+
+
+        function sendData(){
+            const input = document.getElementById("inputExcel")
+
+            const formData = new FormData()
+
+            formData.append("ArchivoExcel",input.files[0])
+
+            fetch("Home/EnviarDatos",{
+                method: "POST",
+                body:formData
+            })
+            .then((response) => { return response.json()})
+            .then((dataJson) => {
+
+              alert(dataJson.mensaje);
+            
+            })
+        
+        
+        }
+
+    </script>
+
+}
